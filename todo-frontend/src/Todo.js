@@ -23,14 +23,10 @@ export default function Todo() {
         if (Array.isArray(res)) {
           setTodos(res);
         } else {
-          console.error("Unexpected response:", res);
           setTodos([]);
         }
       })
-      .catch((err) => {
-        console.error(err);
-        setTodos([]);
-      });
+      .catch(() => setTodos([]));
   };
 
   const handleSubmit = () => {
@@ -42,9 +38,7 @@ export default function Todo() {
         body: JSON.stringify({ title, description }),
       })
         .then((res) => {
-          if (!res.ok) {
-            throw new Error("Failed");
-          }
+          if (!res.ok) throw new Error();
           return res.json();
         })
         .then((newTodo) => {
@@ -73,21 +67,19 @@ export default function Todo() {
         body: JSON.stringify({ title: editTitle, description: editDescription }),
       })
         .then((res) => {
-          if (!res.ok) {
-            throw new Error("Failed");
-          }
+          if (!res.ok) throw new Error();
           return res.json();
         })
-        .then((updatedTodoFromServer) => {
+        .then((updatedTodo) => {
           const updatedTodos = todos.map((item) =>
-            item._id === editId ? updatedTodoFromServer : item
+            item._id === editId ? updatedTodo : item
           );
           setTodos(updatedTodos);
+          setEditId(null);
           setEditTitle("");
           setEditDesciption("");
           setMessage("Item updated successfully");
           setTimeout(() => setMessage(""), 3000);
-          setEditId(null);
         })
         .catch(() => setError("Unable to update Todo item"));
     }
@@ -103,9 +95,7 @@ export default function Todo() {
     if (window.confirm("Are you sure want to delete?")) {
       fetch(apiUrl + "/todos/" + id, { method: "DELETE" })
         .then((res) => {
-          if (!res.ok && res.status !== 204) {
-            throw new Error("Failed");
-          }
+          if (!res.ok && res.status !== 204) throw new Error();
           const updatedTodos = todos.filter((item) => item._id !== id);
           setTodos(updatedTodos);
         })
@@ -114,13 +104,13 @@ export default function Todo() {
   };
 
   return (
-    <div>
-      <h1>Todo List</h1>
+    <div className="app">
+      <h1 className="title">Todo List</h1>
 
-      {message && <p style={{ color: "green" }}>{message}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {message && <p className="msg success">{message}</p>}
+      {error && <p className="msg error">{error}</p>}
 
-      <div>
+      <div className="form">
         <input
           type="text"
           placeholder="Title"
@@ -135,9 +125,9 @@ export default function Todo() {
         <button onClick={handleSubmit}>Submit</button>
       </div>
 
-      <div>
+      <div className="list">
         {todos.map((item) => (
-          <div key={item._id}>
+          <div key={item._id} className="todo">
             {editId === item._id ? (
               <>
                 <input
