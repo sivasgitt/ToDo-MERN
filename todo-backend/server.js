@@ -7,10 +7,13 @@ app.use(express.json());
 app.use(cors());
 
 // MongoDB connection
+const MONGO_URL = process.env.MONGODB_URI || 'mongodb://localhost:27017/mern-app';
+
 mongoose
-  .connect('mongodb://localhost:27017/mern-app')  // for local; on Render this must be a cloud Mongo URL
+  .connect(MONGO_URL)
   .then(() => console.log('DB Connected!'))
   .catch((err) => console.log(err));
+
 
 // Schema & model
 const todoSchema = new mongoose.Schema({
