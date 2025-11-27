@@ -11,7 +11,8 @@ export default function Todo() {
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDesciption] = useState("");
 
-  const apiUrl = "http://localhost:8000";
+  const apiUrl = "https://todo-backend-lg4s.onrender.com";
+
 
   useEffect(() => {
     getItems();
