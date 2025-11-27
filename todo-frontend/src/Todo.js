@@ -6,7 +6,7 @@ export default function Todo() {
   const [todos, setTodos] = useState([]);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [editId, setEditId] = useState(-1);
+  const [editId, setEditId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDesciption] = useState("");
 
@@ -87,13 +87,17 @@ export default function Todo() {
           setEditDesciption("");
           setMessage("Item updated successfully");
           setTimeout(() => setMessage(""), 3000);
-          setEditId(-1);
+          setEditId(null);
         })
         .catch(() => setError("Unable to update Todo item"));
     }
   };
 
-  const handleEditCancel = () => setEditId(-1);
+  const handleEditCancel = () => {
+    setEditId(null);
+    setEditTitle("");
+    setEditDesciption("");
+  };
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure want to delete?")) {
@@ -110,13 +114,13 @@ export default function Todo() {
   };
 
   return (
-    <div className="App">
+    <div>
       <h1>Todo List</h1>
 
-      {message && <div className="message">{message}</div>}
-      {error && <div className="error">{error}</div>}
+      {message && <p style={{ color: "green" }}>{message}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <div className="form">
+      <div>
         <input
           type="text"
           placeholder="Title"
@@ -131,9 +135,9 @@ export default function Todo() {
         <button onClick={handleSubmit}>Submit</button>
       </div>
 
-      <div className="list">
+      <div>
         {todos.map((item) => (
-          <div key={item._id} className="todo-item">
+          <div key={item._id}>
             {editId === item._id ? (
               <>
                 <input
